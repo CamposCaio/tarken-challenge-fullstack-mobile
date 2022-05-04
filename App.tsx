@@ -1,12 +1,12 @@
 import * as React from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper'
-import { MovieCard } from './components/MovieCard'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 import { useEffect, useState } from 'react'
 import { getAllMoovyAPI, MoovyAPI } from './utils/api'
-import { EmptyLibrary } from './components/EmptyLibrary'
+import { EmptyLibrary } from './Screens/EmptyLibrary/EmptyLibrary'
 import { StyleSheet } from 'react-native'
+import { MovieCard } from './Screens/MovieCard/MovieCard'
 
 const Tab = createMaterialTopTabNavigator()
 

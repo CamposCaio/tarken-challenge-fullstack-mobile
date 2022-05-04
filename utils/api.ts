@@ -25,9 +25,7 @@ export async function getMoovyAPI(imdbID: string) {
 
 export async function getAllMoovyAPI() {
   try {
-    console.log('getting all movies...')
-    const { data } = await axios.get<MoovyAPI[]>(`${API_URL}/movie`)
-    console.log(JSON.stringify(data))
+    const { data } = await axios.get<MoovyAPI[]>(`${API_URL}/movies`)
     const onlyNotDeleted = data.filter((data) => {
       return !data.deleted
     })
