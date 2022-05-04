@@ -1,1 +1,0 @@
-# tarken-challenge-fullstack-mobile
