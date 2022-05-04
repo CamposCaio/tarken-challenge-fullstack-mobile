@@ -1,8 +1,9 @@
 import { Audio } from 'expo-av'
-import { useState } from 'react'
+import { SetStateAction, useState } from 'react'
 import { Text, View } from 'react-native'
 import { Button, Snackbar } from 'react-native-paper'
 import { styles } from './styles'
+import * as FileSystem from 'expo-file-system'
 
 function formatTimer(timerSeconds: number) {
   let seconds = timerSeconds % 60
@@ -10,7 +11,11 @@ function formatTimer(timerSeconds: number) {
   return `${('0' + minutes).slice(-2)}:${('0' + seconds).slice(-2)}`
 }
 
-export function RecordAudio() {
+interface Props {
+  imdbID: string
+  setAudioExists: React.Dispatch<SetStateAction<boolean>>
+}
+export function RecordAudio({ imdbID, setAudioExists }: Props) {
   const [recording, setRecording] = useState<Audio.Recording>()
   const [alert, setAlert] = useState('')
   const [recordingTimer, setRecordingTimer] = useState<number>(0)
@@ -53,13 +58,19 @@ export function RecordAudio() {
     recordingTimerInterval && clearInterval(recordingTimerInterval)
     setRecording(undefined)
     await recording.stopAndUnloadAsync()
+    const uri = recording.getURI()
+    if (!uri) return
 
-    // Save recording
-    const { sound, status } = await recording.createNewLoadedSoundAsync()
-    // updateRecordings.push({
-    //   sound: sound,
-    //   file: recording?.getURI(),
-    // })
+    const { status } = await FileSystem.uploadAsync(
+      `http://192.168.1.104:3000/audios/${imdbID}`,
+      uri,
+      {
+        uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+        fieldName: 'audio',
+      }
+    )
+
+    status == 201 && setAudioExists(true)
   }
 
   return (

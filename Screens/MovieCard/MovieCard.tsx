@@ -4,12 +4,17 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import { MoovyAPI } from '../../utils/api'
 import { styles } from './styles'
 import { RecordAudio } from '../../components/RecordAudio'
+import { PlayAudio } from '../../components/PlayAudio'
+import { useState } from 'react'
 
 interface Props {
   movie: MoovyAPI
 }
 
 export function MovieCard({ movie }: Props) {
+  const [audioExists, setAudioExists] = useState<boolean>(
+    movie.audioSrc ? true : false
+  )
   return (
     <View style={styles.view}>
       {/* @ts-ignore */}
@@ -28,7 +33,15 @@ export function MovieCard({ movie }: Props) {
         {/* @ts-ignore */}
         <Text style={styles.text}>{movie.imdbRating}</Text>
       </View>
-      <RecordAudio />
+      {audioExists ? (
+        <PlayAudio
+          title={movie.title}
+          imdbID={movie.imdbID}
+          setAudioExists={setAudioExists}
+        />
+      ) : (
+        <RecordAudio imdbID={movie.imdbID} setAudioExists={setAudioExists} />
+      )}
     </View>
   )
 }

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 
 export interface MoovyAPI {
   id: number
@@ -37,6 +37,14 @@ export async function getAllMoovyAPI() {
   }
 }
 
+export async function deleteAudioMoovyAPI(imdbID: string) {
+  try {
+    const { data } = await axios.delete(`${API_URL}/audios/${imdbID}`)
+    return data.audioSrc === null ? true : false
+  } catch {
+    return false
+  }
+}
 // export async function postMoovyAPI(movie: Movie) {
 //   try {
 //     return axios.post<MoovyAPI>(`${import.meta.env.VITE_API_URL}/movie`, {
@@ -45,17 +53,6 @@ export async function getAllMoovyAPI() {
 //       imdbRating: movie.imdbRating,
 //       imageSrc: movie.imageSrc,
 //     })
-//   } catch {
-//     return null
-//   }
-// }
-
-// export async function deleteMoovyAPI(imdbID: string) {
-//   try {
-//     const { data } = await axios.delete<MoovyAPI>(
-//       `${import.meta.env.VITE_API_URL}/movie/${imdbID}`
-//     )
-//     return data
 //   } catch {
 //     return null
 //   }
