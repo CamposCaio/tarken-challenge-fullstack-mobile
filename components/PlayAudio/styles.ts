@@ -2,19 +2,19 @@ import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
   view: {
-    width: '100%',
+    width: '80%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  timer: {
-    marginVertical: 12,
-    fontSize: 18,
   },
   iconButton: {
     backgroundColor: '#FE6D8E',
   },
   deleteButton: {
-    position: 'absolute',
-    bottom: 0,
-    left: '5%',
+    flexBasis: 50,
+  },
+  duration: {
+    paddingRight: 12,
+    flexBasis: 50,
   },
 })

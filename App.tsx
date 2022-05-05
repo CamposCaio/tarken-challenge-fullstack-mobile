@@ -5,7 +5,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { useEffect, useState } from 'react'
 import { getAllMoovyAPI, MoovyAPI } from './utils/api'
 import { EmptyLibrary } from './Screens/EmptyLibrary/EmptyLibrary'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Text } from 'react-native'
 import { MovieCard } from './Screens/MovieCard/MovieCard'
 
 const Tab = createMaterialTopTabNavigator()
@@ -23,15 +23,15 @@ export default function App() {
     })
   }
 
-  useEffect(() => loadMovies, [])
+  useEffect(() => loadMovies(), [])
 
   return (
     <PaperProvider theme={theme}>
-      {movies[0] ? (
+      <Text style={styles.header}>My Library</Text>
+      {movies.length !== 0 ? (
         <NavigationContainer>
           {/* @ts-ignore */}
           <Tab.Navigator
-            style={styles.navigator}
             screenOptions={{
               tabBarScrollEnabled: true,
               tabBarIndicatorStyle: {
@@ -67,7 +67,10 @@ const theme = {
 }
 
 const styles = StyleSheet.create({
-  navigator: {
-    marginTop: 24,
+  header: {
+    fontSize: 28,
+    paddingTop: 30,
+    paddingBottom: 6,
+    paddingLeft: 12,
   },
 })

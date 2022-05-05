@@ -4,8 +4,9 @@ import { Text, View } from 'react-native'
 import { Button, Snackbar } from 'react-native-paper'
 import { styles } from './styles'
 import * as FileSystem from 'expo-file-system'
+import { API_URL } from '../../utils/api'
 
-function formatTimer(timerSeconds: number) {
+export function formatTimer(timerSeconds: number) {
   let seconds = timerSeconds % 60
   let minutes = Math.floor(timerSeconds / 60)
   return `${('0' + minutes).slice(-2)}:${('0' + seconds).slice(-2)}`
@@ -62,7 +63,7 @@ export function RecordAudio({ imdbID, setAudioExists }: Props) {
     if (!uri) return
 
     const { status } = await FileSystem.uploadAsync(
-      `http://192.168.1.104:3000/audios/${imdbID}`,
+      `${API_URL}/audios/${imdbID}`,
       uri,
       {
         uploadType: FileSystem.FileSystemUploadType.MULTIPART,

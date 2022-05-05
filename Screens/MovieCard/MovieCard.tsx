@@ -15,6 +15,7 @@ export function MovieCard({ movie }: Props) {
   const [audioExists, setAudioExists] = useState<boolean>(
     movie.audioSrc ? true : false
   )
+
   return (
     <View style={styles.view}>
       {/* @ts-ignore */}

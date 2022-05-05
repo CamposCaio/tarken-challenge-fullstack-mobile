@@ -16,6 +16,11 @@ export function DialogConfirmDelete({
 }: Props) {
   const hideDialog = () => setVisible(false)
 
+  function handleDelete() {
+    setVisible(false)
+    deleteAudio()
+  }
+
   return (
     // @ts-ignore
     <Portal>
@@ -28,7 +33,7 @@ export function DialogConfirmDelete({
           {/* @ts-ignore */}
           <Button onPress={hideDialog}>Cancel</Button>
           {/* @ts-ignore */}
-          <Button onPress={deleteAudio}>Delete</Button>
+          <Button onPress={handleDelete}>Delete</Button>
         </Dialog.Actions>
       </Dialog>
     </Portal>

@@ -1,9 +1,10 @@
 import { Audio } from 'expo-av'
 import { SetStateAction, useEffect, useRef, useState } from 'react'
-import { View } from 'react-native'
+import { View, Text } from 'react-native'
 import { IconButton } from 'react-native-paper'
-import { deleteAudioMoovyAPI } from '../../utils/api'
+import { API_URL, deleteAudioMoovyAPI } from '../../utils/api'
 import { DialogConfirmDelete } from '../DialogConfirmDelete'
+import { formatTimer } from '../RecordAudio'
 import { styles } from './styles'
 
 interface Props {
@@ -14,31 +15,37 @@ interface Props {
 export function PlayAudio({ title, imdbID, setAudioExists }: Props) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [openDialog, setOpenDialog] = useState(false)
+  const [duration, setDuration] = useState(0)
   const playbackObject = useRef<Audio.Sound>()
 
-  function onLoad() {
+  async function onLoad() {
     Audio.setAudioModeAsync({
       playsInSilentModeIOS: true,
     })
+
+    const { sound } = await Audio.Sound.createAsync({
+      uri: `${API_URL}/audios/${imdbID}`,
+    })
+    playbackObject.current = sound
+    playbackObject.current.setOnPlaybackStatusUpdate((playbackStatus) => {
+      if (playbackStatus.isLoaded && playbackStatus.didJustFinish) {
+        setIsPlaying(false)
+      }
+    })
+    const status = await playbackObject.current.getStatusAsync()
+    const seconds =
+      status.isLoaded && status.durationMillis
+        ? Math.round(status.durationMillis / 1000)
+        : 0
+    setDuration(seconds)
   }
 
   async function playAudio() {
     try {
-      setIsPlaying(true)
       if (playbackObject.current) {
+        setIsPlaying(true)
         playbackObject.current.replayAsync()
-        return
       }
-      const { sound } = await Audio.Sound.createAsync(
-        { uri: `http://192.168.1.104:3000/audios/${imdbID}` },
-        { shouldPlay: true }
-      )
-      playbackObject.current = sound
-      playbackObject.current.setOnPlaybackStatusUpdate((playbackStatus) => {
-        if (playbackStatus.isLoaded && playbackStatus.didJustFinish) {
-          setIsPlaying(false)
-        }
-      })
     } catch (err) {
       console.error('Failed to play audio', err)
     }
@@ -54,7 +61,9 @@ export function PlayAudio({ title, imdbID, setAudioExists }: Props) {
     if (wasDeleted) setAudioExists(false)
   }
 
-  useEffect(() => onLoad, [])
+  useEffect(() => {
+    onLoad()
+  }, [])
   return (
     <View style={styles.view}>
       <DialogConfirmDelete
@@ -63,14 +72,15 @@ export function PlayAudio({ title, imdbID, setAudioExists }: Props) {
         visible={openDialog}
         setVisible={setOpenDialog}
       />
-      {/* @ts-ignore */}
-      <IconButton
-        size={36}
-        style={styles.deleteButton}
-        color="#FE6D8E"
-        icon="delete"
-        onPress={() => setOpenDialog(true)}
-      />
+      <View style={styles.deleteButton}>
+        {/* @ts-ignore */}
+        <IconButton
+          size={28}
+          color="#FE6D8E"
+          icon="delete"
+          onPress={() => setOpenDialog(true)}
+        />
+      </View>
       {isPlaying ? (
         // @ts-ignore
         <IconButton
@@ -88,6 +98,8 @@ export function PlayAudio({ title, imdbID, setAudioExists }: Props) {
           onPress={playAudio}
         />
       )}
+      {/* @ts-ignore */}
+      <Text style={styles.duration}>{formatTimer(duration)}</Text>
     </View>
   )
 }

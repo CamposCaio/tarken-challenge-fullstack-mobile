@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     marginTop: 24,
-    marginBottom: 12,
+    maxWidth: '90%',
   },
   rating: {
     display: 'flex',

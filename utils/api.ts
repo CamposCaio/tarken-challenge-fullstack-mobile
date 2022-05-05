@@ -12,7 +12,8 @@ export interface MoovyAPI {
   updatedAt: Date
 }
 
-const API_URL = 'http://192.168.1.104:3000'
+// const API_URL = 'http://192.168.1.104:3000'
+export const API_URL = 'https://moovy-back-46sfh.ondigitalocean.app'
 
 export async function getMoovyAPI(imdbID: string) {
   try {
@@ -31,8 +32,7 @@ export async function getAllMoovyAPI() {
     })
     return onlyNotDeleted
   } catch {
-    console.log('error')
-
+    console.log('error connecting to API')
     return null
   }
 }
@@ -40,20 +40,9 @@ export async function getAllMoovyAPI() {
 export async function deleteAudioMoovyAPI(imdbID: string) {
   try {
     const { data } = await axios.delete(`${API_URL}/audios/${imdbID}`)
+
     return data.audioSrc === null ? true : false
   } catch {
     return false
   }
 }
-// export async function postMoovyAPI(movie: Movie) {
-//   try {
-//     return axios.post<MoovyAPI>(`${import.meta.env.VITE_API_URL}/movie`, {
-//       imdbID: movie.imdbID,
-//       title: movie.title,
-//       imdbRating: movie.imdbRating,
-//       imageSrc: movie.imageSrc,
-//     })
-//   } catch {
-//     return null
-//   }
-// }
